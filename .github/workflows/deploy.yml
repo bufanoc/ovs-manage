@@ -1,0 +1,36 @@
+name: Deploy Flask Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Tests (Optional)
+      run: |
+        # If you have a test suite, run it here
+        echo "Run your test suite here, if available."
+
+    - name: Deploy
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      run: |
+        # Add your deployment steps here
+        echo "Add deployment steps specific to your hosting provider or platform."
