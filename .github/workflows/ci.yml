@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black isort
+          cd frontend && npm ci
+          
+      - name: Check Python formatting
+        run: |
+          black --check backend
+          isort --check-only backend
+          flake8 backend
+          
+      - name: Check JavaScript formatting
+        working-directory: frontend
+        run: |
+          npm run lint
+
+  test:
+    needs: lint
+    runs-on: ubuntu-22.04
+    
+    services:
+      ovn:
+        image: ovn/ovn-controller-vtep
+        ports:
+          - 6641:6641
+          - 6642:6642
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+          cd frontend && npm ci
+          
+      - name: Run backend tests
+        run: |
+          pytest backend/tests/ --cov=backend --cov-report=xml
+          
+      - name: Run frontend tests
+        working-directory: frontend
+        run: |
+          npm test -- --coverage
