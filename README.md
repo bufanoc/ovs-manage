@@ -1,7 +1,10 @@
-# OVN Web Manager
+# OVN Web Manager 
 
+This has been developed on Ubuntu 22.04 minimal server. For best results run it on that.
+Do not run this in production, it is not even close.
+Help is apreciated & welcomed.
 
-A modern web application for managing Open Virtual Network (OVN) through a beautiful and intuitive interface, designed to run on Ubuntu Server.
+# A modern web application for managing Open Virtual Network (OVN) through a beautiful and intuitive interface, designed to run on Ubuntu Server.
 
 ## Features
 
