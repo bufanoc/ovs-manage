@@ -30,7 +30,7 @@ Help is apreciated & welcomed.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/ovn-web-manager.git
+   git clone https://github.com/bufanoc/ovn-web-manager.git
    cd ovn-web-manager
    ```
 
